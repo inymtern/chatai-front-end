@@ -1,0 +1,97 @@
+@font-face {
+  font-family: "iconfont"; /* Project id  */
+  src: url('../font/iconfont.ttf?t=1692588261532') format('truetype');
+}
+
+.iconfont {
+  font-family: "iconfont" !important;
+  font-size: 20px;
+  font-style: normal;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+.icon-weixin:before {
+  content: "\e856";
+}
+
+.icon-close-bold:before {
+  content: "\e685";
+}
+
+.icon-a-business-icon-Bigpromotion:before {
+  content: "\e822";
+}
+
+.icon-business-icon-feeds-logo:before {
+  content: "\e823";
+}
+
+.icon-business-icon-sales-center:before {
+  content: "\e824";
+}
+
+.icon-customer-management:before {
+  content: "\e829";
+}
+
+.icon-message-comments:before {
+  content: "\e82e";
+}
+
+.icon-add-btn:before {
+  content: "\e835";
+}
+
+.icon-atm:before {
+  content: "\e837";
+}
+
+.icon-edit:before {
+  content: "\e839";
+}
+
+.icon-confirm:before {
+  content: "\e83a";
+}
+
+.icon-delete:before {
+  content: "\e83b";
+}
+
+.icon-return:before {
+  content: "\e840";
+}
+
+.icon-search:before {
+  content: "\e841";
+}
+
+.icon-settings:before {
+  content: "\e842";
+}
+
+.icon-a-sorting2:before {
+  content: "\e843";
+}
+
+.icon-success:before {
+  content: "\e844";
+}
+
+.icon-up-arrow:before {
+  content: "\e845";
+}
+
+.icon-view:before {
+  content: "\e847";
+}
+
+.icon-home:before {
+  content: "\e858";
+}
+
+.icon-send-fill:before {
+  content: "\e888";
+}
+
