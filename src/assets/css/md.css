@@ -400,7 +400,7 @@
     background-color: #f1f3f5;
 }
 .msg .v-md-editor__left-area, .v-md-editor__right-area {
-    width: auto;
+    min-width: 900px;
 }
 
 .vuepress-markdown-body:not(.custom) a:hover {

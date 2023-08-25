@@ -79,7 +79,6 @@ const syncToAF = (id) => {
     margin-top: 10px;
     padding: 5px;
     border-radius: 5px;
-    max-width: 800px;
     word-break: break-all;
     background: #f1f3f5;
     padding: 15px;
