@@ -54,10 +54,13 @@ export const configStore = defineStore('config', {
             gptKey: '',
             enableContext: false ,
             loadingMsg: false,
+            isSync: false,
             gptConfig: {
                 username: 'ChatAI',
                 headImg: icopng
-            }
+            },
+            pause: false,
+            pause2: false
         }
     },
 
@@ -122,6 +125,15 @@ export const configStore = defineStore('config', {
         },
         setLoadingMsg(b) {
             this.loadingMsg = b
+        },
+        setIsSync(b) {
+            this.isSync = b
+        },
+        setPause(b) {
+            this.pause = b
+        },
+        setPause2(b) {
+            this.pause2 = b
         }
     }
 

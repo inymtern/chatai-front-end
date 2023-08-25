@@ -1,3 +1,5 @@
+import { configStore } from "../stores/Store";
+const cfgStore = configStore()
 const gptUrl = "https://api.openai.com/v1/chat/completions"
 
 export function streamChat(key, messages, onDataReceived) {
@@ -19,10 +21,17 @@ export function streamChat(key, messages, onDataReceived) {
                 window.toastr.error('请求GPT接口失败， 请检查您的代理或账户配额')
                 return
             }
+
             const decoder = new TextDecoder();
             const reader = response.body.getReader();
             function read() {
                 reader.read().then(({ done, value }) => {
+                    if(cfgStore.pause2) {
+                        cfgStore.setLoadingMsg(false)
+                        cfgStore.setPause(false)
+                        cfgStore.setPause2(false)
+                        return
+                    }
                     if (done) {
                         return;
                     }
@@ -33,6 +42,7 @@ export function streamChat(key, messages, onDataReceived) {
             }
             // 开始读取数据
             read();
+
         })
         .catch(error => {
             console.error('请求错误:', error);

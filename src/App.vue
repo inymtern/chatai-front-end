@@ -53,7 +53,7 @@ import { userStore, configStore } from './stores/Store';
 import { loadRecords, roleAdd } from './stores/LocalStore'
 const store = userStore()
 const cfgStore = configStore()
-console.log(window.toastr);
+// console.log(window.toastr);
 
 const roleData = ref({
   title: '_default',
@@ -72,7 +72,7 @@ const addRole = () => {
   cfgStore.changeCurrentRole(roleData.value)
   cfgStore.closeAddRoleView()
 
-  roleData.value.title = "_default"
+  // roleData.value.title = "_default"
   roleData.value.prompt = ""
 }
 

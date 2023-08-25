@@ -12,15 +12,15 @@
         </div>
         <img class="headimg" v-if="!record.left" :src="record.headImg" width="45" height="45">
 
-        <span v-if="record.left && store.getIsLogin" title="同步至AfterLife"  class="select iconfont icon-send-fill"></span>
+        <span v-if="record.left && store.getIsLogin && !cfgStore.isSync" @click="syncToAF(record.id)" title="同步至AfterLife"  class="select iconfont icon-send-fill"></span>
     </div>
     
 </template>
 <script setup>
-import { ref, defineProps } from 'vue'
-import { userStore } from '../stores/Store';
+import { ref, defineProps, defineEmits } from 'vue'
+import { userStore, configStore } from '../stores/Store';
 const store = userStore()
-
+const cfgStore = configStore()
 const props = defineProps({
     record: {
         default: {
@@ -32,11 +32,15 @@ const props = defineProps({
         } 
     }
 })
+const emits = defineEmits(['sync'])
 
 const handleCopyCodeSuccess = () => {
     window.toastr.success('copied!')
 }
 
+const syncToAF = (id) => {
+    emits('sync', id)
+}
 
 
 </script>
@@ -51,7 +55,8 @@ const handleCopyCodeSuccess = () => {
     transition: all .3s;
 }
 .select:hover {
-    transform: scale(1.1);
+    /* transform: scale(1.1); */
+    transform: translateY(-5px);
     cursor: pointer;
 }
 .msgbox {
