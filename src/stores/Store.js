@@ -1,6 +1,7 @@
 import { defineStore } from 'pinia'
-import { get, roleAdd, roleGet, set } from './LocalStore'
+import { get, roleAdd, roleGet, set, remove } from './LocalStore'
 import { now } from '../js/utils'
+import { userinfo } from '../js/api/chatApi'
 import icopng from '@/assets/img/icopng.png'
 import upng from '@/assets/img/u.png'
 export const userStore = defineStore('user', {
@@ -24,18 +25,36 @@ export const userStore = defineStore('user', {
         },
         getIsLogin() {
             return this.isLogin
-        }
+        },
+       
+        
     },
 
-    actions:  {
-        login(username, email, token) {
+    actions: {
+        login(username, email,headImg, token) {
             this.username = username
             this.email = email
-            this.token = token
+            this.headImg = headImg
             this.isLogin = true
+            set("Authorization", { token: "Bearer " + token })
         },
         loadUserInfo() {
-            // TODO 
+            const tokenObj = get("Authorization")
+            if (tokenObj) {
+                userinfo().then(res => {
+                    this.headImg = res.data.headImg
+                    this.username = res.data.username
+                    this.email = res.data.email
+                    this.isLogin = true
+                })
+            }
+        },
+        logout() {
+            this.isLogin = false
+            this.username= 'Guest',
+            this.email= 'click to login... ',
+            this.headImg= upng
+            remove("Authorization")
         }
     }
 })
@@ -52,7 +71,7 @@ export const configStore = defineStore('config', {
             currentUserMsg: {}, // 当前对话
             sendStatus: false,
             gptKey: '',
-            enableContext: false ,
+            enableContext: false,
             loadingMsg: false,
             isSync: false,
             gptConfig: {
@@ -94,9 +113,9 @@ export const configStore = defineStore('config', {
         },
         loadRole() {
             this.roleList = roleGet()
-            if(this.roleList.length > 0) {
+            if (this.roleList.length > 0) {
                 this.currentRole = this.roleList[0]
-            }else {
+            } else {
                 const newo = {
                     id: now(),
                     title: '_default',

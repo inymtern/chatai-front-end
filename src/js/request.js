@@ -3,17 +3,21 @@ import { get } from '../stores/LocalStore';
 
 // 创建 axios 实例
 const instance = axios.create({
-  baseURL: 'http://127.0.0.1:8999/', // 设置 baseURL
+  baseURL: '/', // 设置 baseURL
   timeout: 20000, // 设置超时时间，单位为毫秒
 });
 
 // 添加请求拦截器
 instance.interceptors.request.use(
   config => {
-    // const token = get('Authorization')
-    // if (token) {
-    //   config.headers['Authorization'] = "Bearer " + token
-    // }
+    const t = get('Authorization')
+    if (t) {
+      const token = t.token
+      if (token) {
+        config.headers['Authorization'] = token
+      }
+    }
+
     return config;
   },
   error => {

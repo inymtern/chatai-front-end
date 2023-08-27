@@ -16,7 +16,7 @@
   <transition name="fade" appear>
     <Modal v-if="cfgStore.showLogin" @close-modal="closeModal">
       <template #default>
-        <div class="loginbtn"> <span class="iconfont icon-atm"></span> <span>AfterLife 授权登录</span></div>
+        <div class="loginbtn" @click="oauth2Login"> <span class="iconfont icon-atm"></span> <span>AfterLife 授权登录</span></div>
       </template>
     </Modal>
   </transition>
@@ -26,6 +26,7 @@
     <Modal v-if="cfgStore.showSetting" @close-modal="closeSettingModal">
       <template #default>
         <input class="inputt" type="text" v-model="cfgStore.gptKey" @keydown.enter="saveGptKey" placeholder="input api key ">
+        <button v-if="store.isLogin" class="buttonn" @click="quit">退出登录</button>
       </template>
     </Modal>
   </transition>
@@ -45,20 +46,31 @@
 
 </template>
 <script setup>
-import {ref} from 'vue'
+import {ref, watch} from 'vue'
+import { useRoute, useRouter } from 'vue-router'
 import UserTool from './components/UserTool.vue'
 import ChatRole from './components/chatRole.vue'
 import Modal from './components/Modal.vue'
 import { userStore, configStore } from './stores/Store';
 import { loadRecords, roleAdd } from './stores/LocalStore'
+import { getLoginParams, fetchAccessToken } from './js/api/chatApi'
+import { env } from './js/env'
 const store = userStore()
 const cfgStore = configStore()
+const route = useRoute()
+const router = useRouter()
 // console.log(window.toastr);
 
 const roleData = ref({
   title: '_default',
   prompt: '',
   id: ''
+})
+
+watch(()=> {
+  return route.query
+}, (nval) => {
+  oauth2RedirectHandler()
 })
 
 
@@ -74,6 +86,12 @@ const addRole = () => {
 
   // roleData.value.title = "_default"
   roleData.value.prompt = ""
+}
+
+const oauth2Login = () => {
+  getLoginParams("state").then(res => {
+    window.location.href = env.oauthLoginAddr + res.data + "&nonce=" + Date.now()
+  })
 }
 
 
@@ -92,6 +110,28 @@ const saveGptKey = () => {
   cfgStore.closeSettingView()
 }
 
+const quit = () => {
+  store.logout()
+  cfgStore.closeSettingView()
+  window.toastr.success('登出成功')
+}
+
+// ------------------------------------- OAuth2 login
+
+const oauth2RedirectHandler = () => {
+  const code = route.query.code
+  if(!code) return
+  fetchAccessToken(code).then(res => {
+    const userinfo = res.data.userinfo
+    store.login(userinfo.username, userinfo.email, userinfo.headImg, res.data.token)
+    router.push("/")
+    window.toastr.success('登录成功')
+  }).catch(err => {
+    console.log("授权出现错误");
+    router.push("/")
+  })
+
+}
 
 
 
@@ -99,6 +139,7 @@ const saveGptKey = () => {
 const init = () => {
   cfgStore.loadRole()
   cfgStore.loadGptKey() 
+  store.loadUserInfo()
 }
 
 init()

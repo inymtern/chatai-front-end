@@ -1,3 +1,6 @@
+export function remove(key) {
+    window.localStorage.removeItem(key)
+}
 export function set(key, value) {
     window.localStorage.setItem(key, JSON.stringify(value))
 }

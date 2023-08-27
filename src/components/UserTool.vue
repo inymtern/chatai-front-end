@@ -39,7 +39,7 @@ const openLogin = () => {
 
 .middle {
     cursor: pointer;
-    margin-left: 20px;
+    margin-left: 10px;
 }
 
 .username {

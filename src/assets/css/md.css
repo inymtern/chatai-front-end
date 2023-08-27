@@ -401,6 +401,7 @@
 }
 .msg .v-md-editor__left-area, .v-md-editor__right-area {
     width: auto;
+    max-width: 1000px;
 }
 
 .vuepress-markdown-body:not(.custom) a:hover {

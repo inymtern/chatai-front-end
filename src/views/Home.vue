@@ -6,7 +6,9 @@
         <div class="inputview">
             <input-view @clearRecords="clearRecords"></input-view>
         </div>
-        <div class="pause" v-if="cfgStore.loadingMsg" @click="pausePrint"> <span class="iconfont icon-close-bold"></span> <span>停止</span></div>
+        <div class="pause" v-if="cfgStore.loadingMsg" @click="pausePrint"> <span class="iconfont icon-close-bold"></span>
+            <span>停止</span>
+        </div>
     </div>
 </template>
 <script setup>
@@ -18,6 +20,7 @@ import { addRecord, loadRecords } from '../stores/LocalStore';
 import { withContext, withoutContext, streamChat } from '../js/gpt';
 import { now } from '../js/utils';
 import { uploadImg } from '../js/api/commonApi'
+import { syncBlog } from '../js/api/chatApi'
 const cfgStore = configStore()
 const { proxy } = getCurrentInstance()
 
@@ -44,6 +47,7 @@ onMounted(() => {
 })
 
 const syncToAF = (id) => {
+    window.toastr.info('正在同步..')
     cfgStore.setIsSync(true)
     let last = ''
     let cur = ''
@@ -89,20 +93,47 @@ const syncToAF = (id) => {
             // console.log(blob);
             const file = blobToFile(blob, Date.now() + ".png")
             home.removeChild(parentDiv)
-            
+
             var formData = new FormData();
             formData.append('file', file);
+            const tt = last.text.length < 50 ? last.text : '[ChatAI Sync] DEFAULT TITLE'
             uploadImg(formData).then(res => {
                 console.log(res.data);
                 cfgStore.setIsSync(false)
+                
+                const insertData = {
+                    cover: res.data,
+                    title: tt,
+                    intro: getIntro(cur.text) + "...",
+                    text: "# " + tt + " {.title} \n\n" +  cur.text
+                }
+                syncBlog(insertData).then(r => {
+                    window.toastr.success('同步成功')
+                })
             }).catch(err => {
-
+                const insertData = {
+                    cover: 'error',
+                    title: tt,
+                    intro: getIntro(cur.text) + "...",
+                    text: "# " + tt + " {.title} \n"  + cur.text
+                }
+                syncBlog(insertData).then(r => {
+                    window.toastr.success('同步成功')
+                })
+                
             })
 
             // window.saveAs(blob, 'my-node.png');
         });
 
 }
+const getIntro = (txt) => {
+    if (!txt) return ""
+    if (txt.length > 100) {
+        return txt.substring(0, 100);
+    }
+    return txt;
+};
 
 const blobToFile = (blob, fileName) => {
     const file = new File([blob], fileName);
@@ -148,7 +179,7 @@ const chat = (context, key) => {
     records.value.push(respData)
     streamChat(key, context, (item) => {
         cfgStore.setLoadingMsg(true)
-        if(cfgStore.pause) {
+        if (cfgStore.pause) {
             records.value[records.value.length - 1].text += ' 【STOP】'
             addRecord(cfgStore.currentRole.id, respData)
             cfgStore.setPause2(true)
@@ -192,6 +223,7 @@ const chat = (context, key) => {
     height: 90px;
 
 }
+
 .pause {
     position: absolute;
     bottom: 100px;
@@ -205,9 +237,11 @@ const chat = (context, key) => {
     display: flex;
     align-items: center;
 }
+
 .pause .iconfont {
     font-size: 18px;
 }
+
 .pause:hover {
     cursor: pointer;
     background: #ff6b6b90;
