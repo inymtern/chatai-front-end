@@ -11,8 +11,8 @@
   position: absolute;
   top: 0;
   left: 0;
-  background-image: url(https://common-1305559490.cos.ap-shanghai.myqcloud.com/img/1693110088409.webp);
-  background-size: 1120px auto;
+  /* background-image: url(https://common-1305559490.cos.ap-shanghai.myqcloud.com/img/1693110088409.webp);
+  background-size: 1120px auto; */
   z-index: -1;
   padding: 20px 30px;
 }
